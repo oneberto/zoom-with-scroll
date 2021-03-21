@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useLayoutEffect, useRef } from "react";
+import { formatToWholeNumber, getScrollPercentage } from "./utils";
 
-function App() {
+const App: React.FC = () => {
+  const startScroll = useRef<number>();
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const handleScroll = useCallback(() => {
+    const scrollPercentage = getScrollPercentage();
+
+    if (!startScroll?.current) {
+      startScroll.current = scrollPercentage;
+
+      return;
+    }
+
+    const scrollValue = (scrollPercentage - startScroll.current) / 100;
+    const formmated = formatToWholeNumber(scrollValue) * 1;
+
+    if (imageRef.current) {
+      imageRef.current.style.transform = `scale(${1 + formmated})`;
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    window.onscroll = handleScroll;
+  }, [handleScroll]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="space">
+      <p className="legend">Scroll to zoom...</p>
+      <div className="image" ref={imageRef}></div>
     </div>
   );
-}
+};
 
 export default App;
