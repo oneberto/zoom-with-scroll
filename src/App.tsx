@@ -15,7 +15,7 @@ const App: React.FC = () => {
     }
 
     const scrollValue = (scrollPercentage - startScroll.current) / 100;
-    const formmated = formatToWholeNumber(scrollValue) * 1;
+    const formmated = formatToWholeNumber(scrollValue) * 1.8;
 
     if (imageRef.current) {
       imageRef.current.style.transform = `scale(${1 + formmated})`;
